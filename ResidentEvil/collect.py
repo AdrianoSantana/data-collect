@@ -2,6 +2,7 @@
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
+import pandas as pd
 
 cookies = {
     '_ga_DJLCSW50SC': 'GS1.1.1734112190.2.1.1734112278.57.0.0',
@@ -72,7 +73,9 @@ def get_character_data(url):
     else:
         soup = BeautifulSoup(response.text)
         data = get_basic_info(soup)
-        data['participations'] = get_series_participations(soup)
+        nome = url.split('/')[-2].replace('-', ' ').title()
+        data["Nome"] = nome
+        data['Aparicoes'] = get_series_participations(soup)
         return data   
 
 def get_char_links():
@@ -94,4 +97,7 @@ for link in tqdm(links):
     data.append(get_character_data(link))
 
 # %%
-data
+df = pd.DataFrame(data)
+df.to_parquet('../data/raw/dados_re.parquet', index=False)
+# %%
+df_new = pd.read_parquet('../data/raw/dados_re.parquet')
