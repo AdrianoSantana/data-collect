@@ -11,7 +11,7 @@ def get_response(**kwargs):
 
 def save_data(data, option='json'):
     now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S_%f')
-    path_save = f'../data/raw/contents/{option}'
+    path_save = f'/mnt/datalake/tabnews/contents/{option}'
     if option == 'json':
         with open(f'{path_save}/{now}.json', 'w') as open_file:
             json.dump(data, open_file, indent=4)
