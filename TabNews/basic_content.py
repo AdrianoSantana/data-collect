@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import datetime
 import json
+import time
 
 def get_response(**kwargs):
     url = "https://www.tabnews.com.br/api/v1/contents"
@@ -20,7 +21,19 @@ def save_data(data, option='json'):
         
             
 # %%
-response = get_response(page=1, per_page=100, strategy="new")
-data = response.json()
-# %%
-save_data(data, 'json')
+page = 1
+while True:
+    response = get_response(page=page, per_page=100, strategy="new")
+    print(f'response received {response.status_code}')
+    if response.status_code == 200:
+        print(f'Saving data for page {page}')
+        data = response.json()
+        if len(data) < 100:
+            break
+
+        save_data(data, 'json')
+        page += 1
+        time.sleep(2)
+    else:
+        print(f'Sleeeping')
+        time.sleep(10)
